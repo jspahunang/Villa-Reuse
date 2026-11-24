@@ -28,6 +28,12 @@
 
 .sidebar__link:hover { background: var(--c-green-100); }
 
+/* Hidden until syncNavigation shows them for the signed-in role. */
+.sidebar__link[href="moderation.html"],
+.sidebar__link[href="admin.html"] {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .sidebar {
     position: static;

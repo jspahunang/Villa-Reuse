@@ -1,6 +1,16 @@
-const FILTERS = ["All", "Clothes", "Appliances", "Books", "Others"];
+const FILTERS = [
+    "All",
+    "Clothes",
+    "Appliances",
+    "Books",
+    "School Supplies",
+    "Household Items",
+    "Furniture",
+    "Others",
+];
 export function mountFilterChips(container, onSelect) {
     const buttons = new Map();
+    container.replaceChildren();
     FILTERS.forEach((name) => {
         const btn = document.createElement("button");
         btn.type = "button";

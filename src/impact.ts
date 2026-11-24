@@ -2,6 +2,8 @@ import { STAT_CARDS, CONTRIBUTORS, CHAIN_STATS, CHAIN_ID, PERIOD_LABEL } from ".
 import { createStatCard } from "./components/statCard.js";
 import { createContributorRow } from "./components/contributorList.js";
 import { createQrPattern, renderChainStats } from "./components/chainStats.js";
+import { syncNavigation } from "./components/navigation.js";
+import { mountLogout } from "./components/auth.js";
 
 function requireElement<T extends HTMLElement>(id: string): T {
   const el = document.getElementById(id);
@@ -10,6 +12,9 @@ function requireElement<T extends HTMLElement>(id: string): T {
 }
 
 function bootstrap(): void {
+  syncNavigation();
+  mountLogout();
+
   const statRow = requireElement<HTMLElement>("stat-row");
   const list = requireElement<HTMLOListElement>("contributor-list");
   const qr = requireElement<HTMLElement>("qr-code");

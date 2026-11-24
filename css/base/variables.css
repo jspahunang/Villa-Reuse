@@ -17,6 +17,15 @@
   --font-sans: "DM Sans", system-ui, sans-serif;
   --font-serif: "Fraunces", Georgia, serif;
 
+  /* Type scale */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --leading-tight: 1.4;
+  --leading-normal: 1.5;
+
   /* Layout */
   --header-h: 70px;
   --sidebar-w: 206px;

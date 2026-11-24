@@ -1,12 +1,22 @@
 import type { CategoryFilter } from "../types.js";
 
-const FILTERS: CategoryFilter[] = ["All", "Clothes", "Appliances", "Books", "Others"];
+const FILTERS: CategoryFilter[] = [
+  "All",
+  "Clothes",
+  "Appliances",
+  "Books",
+  "School Supplies",
+  "Household Items",
+  "Furniture",
+  "Others",
+];
 
 export function mountFilterChips(
   container: HTMLElement,
   onSelect: (category: CategoryFilter) => void,
 ): (active: CategoryFilter) => void {
   const buttons = new Map<CategoryFilter, HTMLButtonElement>();
+  container.replaceChildren();
 
   FILTERS.forEach((name) => {
     const btn = document.createElement("button");

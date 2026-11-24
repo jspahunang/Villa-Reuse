@@ -2,6 +2,8 @@ import { STAT_CARDS, CONTRIBUTORS, CHAIN_STATS, CHAIN_ID, PERIOD_LABEL } from ".
 import { createStatCard } from "./components/statCard.js";
 import { createContributorRow } from "./components/contributorList.js";
 import { createQrPattern, renderChainStats } from "./components/chainStats.js";
+import { syncNavigation } from "./components/navigation.js";
+import { mountLogout } from "./components/auth.js";
 function requireElement(id) {
     const el = document.getElementById(id);
     if (!el)
@@ -9,6 +11,8 @@ function requireElement(id) {
     return el;
 }
 function bootstrap() {
+    syncNavigation();
+    mountLogout();
     const statRow = requireElement("stat-row");
     const list = requireElement("contributor-list");
     const qr = requireElement("qr-code");

@@ -33,3 +33,13 @@
 @import "components/profile-card.css";
 @import "components/balance-panel.css";
 @import "components/activity-list.css";
+
+/* /login page */
+@import "components/login-card.css";
+
+/* /extended features */
+@import "components/status-badges.css";
+@import "components/modal.css";
+@import "components/management-tables.css";
+
+

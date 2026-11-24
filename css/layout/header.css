@@ -107,6 +107,34 @@
   font-weight: 700;
 }
 
+.header-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.header-logout:hover {
+  border-color: var(--c-green-600);
+  color: var(--c-green-700);
+  background: #f5faf6;
+}
+
+.header-logout svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
   .header { padding: 0 16px; }
   .coins__label { display: none; }

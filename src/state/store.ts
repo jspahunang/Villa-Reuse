@@ -3,7 +3,7 @@ import type { FilterState } from "../types.js";
 type Listener = (state: FilterState) => void;
 
 export class FilterStore {
-  private state: FilterState = { category: "All", query: "" };
+  private state: FilterState = { category: "All", query: "", listingType: "All", condition: "All" };
   private listeners = new Set<Listener>();
 
   get snapshot(): FilterState {

@@ -1,6 +1,8 @@
-import { PROFILE, ACTIVITY } from "./data/profileData.js";
+import { getActiveUser, ACTIVITY } from "./data/profileData.js";
 import { renderProfile } from "./components/profileCard.js";
 import { createActivityRow } from "./components/activityList.js";
+import { syncNavigation } from "./components/navigation.js";
+import { mountLogout } from "./components/auth.js";
 function requireElement(id) {
     const el = document.getElementById(id);
     if (!el)
@@ -8,7 +10,10 @@ function requireElement(id) {
     return el;
 }
 function bootstrap() {
-    renderProfile(PROFILE);
+    const activeUser = getActiveUser();
+    syncNavigation(activeUser);
+    renderProfile(activeUser);
+    mountLogout();
     const list = requireElement("activity-list");
     list.append(...ACTIVITY.map(createActivityRow));
     list.addEventListener("click", (event) => {
@@ -17,11 +22,7 @@ function bootstrap() {
             console.log("Open activity:", row.dataset.id);
     });
     requireElement("edit-profile").addEventListener("click", () => {
-        console.log("Edit profile");
-    });
-    requireElement("logout-btn").addEventListener("click", () => {
-        if (confirm("Log out of Villa-Reuse?"))
-            window.location.href = "index.html";
+        alert(`Editing profile for ${activeUser.name} (${activeUser.role}).`);
     });
 }
 bootstrap();

@@ -2,12 +2,10 @@
   "name": "villa-reuse",
   "version": "1.0.0",
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "build:client": "tsc -p tsconfig.json",
-    "build:server": "tsc -p tsconfig.server.json",
-    "build": "npm run build:client && npm run build:server",
-    "seed": "node server/dist/seed.js",
-    "start": "node server/dist/index.js",
-    "dev": "npm run build && npm run seed && npm run start",
+    "start": "node server.js",
+    "dev": "npm run build && node server.js",
     "watch": "tsc -w -p tsconfig.json"
   },
   "dependencies": {

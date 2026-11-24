@@ -3,7 +3,8 @@
 body {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
   color: var(--c-text);
   background: var(--c-bg);
   -webkit-font-smoothing: antialiased;

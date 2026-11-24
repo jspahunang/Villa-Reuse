@@ -1,6 +1,8 @@
-import { PROFILE, ACTIVITY } from "./data/profileData.js";
+import { getActiveUser, ACTIVITY } from "./data/profileData.js";
 import { renderProfile } from "./components/profileCard.js";
 import { createActivityRow } from "./components/activityList.js";
+import { syncNavigation } from "./components/navigation.js";
+import { mountLogout } from "./components/auth.js";
 
 function requireElement<T extends HTMLElement>(id: string): T {
   const el = document.getElementById(id);
@@ -9,7 +11,11 @@ function requireElement<T extends HTMLElement>(id: string): T {
 }
 
 function bootstrap(): void {
-  renderProfile(PROFILE);
+  const activeUser = getActiveUser();
+  syncNavigation(activeUser);
+  renderProfile(activeUser);
+  mountLogout();
+
 
   const list = requireElement<HTMLUListElement>("activity-list");
   list.append(...ACTIVITY.map(createActivityRow));
@@ -20,11 +26,7 @@ function bootstrap(): void {
   });
 
   requireElement<HTMLButtonElement>("edit-profile").addEventListener("click", () => {
-    console.log("Edit profile");
-  });
-
-  requireElement<HTMLButtonElement>("logout-btn").addEventListener("click", () => {
-    if (confirm("Log out of Villa-Reuse?")) window.location.href = "index.html";
+    alert(`Editing profile for ${activeUser.name} (${activeUser.role}).`);
   });
 }
 

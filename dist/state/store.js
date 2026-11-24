@@ -1,6 +1,6 @@
 export class FilterStore {
     constructor() {
-        this.state = { category: "All", query: "" };
+        this.state = { category: "All", query: "", listingType: "All", condition: "All" };
         this.listeners = new Set();
     }
     get snapshot() {

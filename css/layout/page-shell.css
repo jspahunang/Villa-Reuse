@@ -20,6 +20,58 @@
 
 .back-link:hover { color: var(--c-green-600); }
 
+/* Base button styles for consistency across pages */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn--outline {
+  background: transparent;
+  border-color: var(--c-border);
+  color: var(--c-text);
+}
+
+.btn--outline:hover {
+  border-color: var(--c-green-600);
+  color: var(--c-green-700);
+}
+
+.activity-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.activity-logout:hover {
+  border-color: var(--c-green-600);
+  color: var(--c-green-700);
+}
+
 .page-title {
   margin-top: 6px;
   font-family: var(--font-serif);
