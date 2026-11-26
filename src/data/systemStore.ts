@@ -9,11 +9,11 @@ import type {
   ReportStatus,
 } from "../types.js";
 
-const ITEMS_KEY = "villa_reuse_items_v2";
-const REQUESTS_KEY = "villa_reuse_requests_v2";
-const REPORTS_KEY = "villa_reuse_reports_v2";
-const LOGS_KEY = "villa_reuse_logs_v2";
-const USERS_KEY = "villa_reuse_users_v2";
+const ITEMS_KEY = "villa_reuse_items_v3";
+const REQUESTS_KEY = "villa_reuse_requests_v3";
+const REPORTS_KEY = "villa_reuse_reports_v3";
+const LOGS_KEY = "villa_reuse_logs_v3";
+const USERS_KEY = "villa_reuse_users_v3";
 
 export const DEFAULT_ITEMS: Item[] = [
   {
@@ -115,6 +115,72 @@ export const DEFAULT_ITEMS: Item[] = [
     image: "assets/ceramic-table-set.png",
     details: "Solid Birch · Ergonomic",
   },
+  {
+    id: "item_7",
+    title: "LED Desk Reading Lamp",
+    description: "Adjustable warm/cool light lamp with USB charging base. Excellent for reading and evening desk study.",
+    category: "Appliances",
+    condition: "Like New",
+    listingType: "Donation",
+    status: "Available",
+    donorId: "usr_moderator",
+    donorName: "Alex Chen",
+    distanceKm: 1.8,
+    postedAgo: "2 days ago",
+    coins: 20,
+    image: "assets/electric-kettle.png",
+    details: "Adjustable · 3 Light Modes",
+  },
+  {
+    id: "item_8",
+    title: "Solar Power Bank 20000mAh",
+    description: "Rugged outdoor power bank with dual USB ports and solar recharge panel. Fully tested and working.",
+    category: "Appliances",
+    condition: "Good",
+    listingType: "Exchange",
+    exchangeFor: "Bicycle lock or helmet",
+    status: "Available",
+    donorId: "usr_moderator",
+    donorName: "Alex Chen",
+    distanceKm: 2.2,
+    postedAgo: "3 days ago",
+    coins: 35,
+    image: "assets/electric-kettle.png",
+    details: "20,000mAh · Dual USB",
+  },
+  {
+    id: "item_9",
+    title: "Ergonomic Mechanical Keyboard",
+    description: "Compact wireless mechanical keyboard with quiet linear switches. Clean and comfortable for typing.",
+    category: "Appliances",
+    condition: "Like New",
+    listingType: "Exchange",
+    exchangeFor: "Laptop stand or ergonomic mouse",
+    status: "Available",
+    donorId: "usr_admin",
+    donorName: "Samira Patel",
+    distanceKm: 0.9,
+    postedAgo: "1 day ago",
+    coins: 50,
+    image: "assets/design-handbook.png",
+    details: "Wireless · Linear Switches",
+  },
+  {
+    id: "item_10",
+    title: "Stainless Steel Thermal Flask Set",
+    description: "Double-walled vacuum insulated flask with 2 travel mugs. Keeps liquids hot for 12 hours.",
+    category: "Household Items",
+    condition: "Good",
+    listingType: "Donation",
+    status: "Available",
+    donorId: "usr_admin",
+    donorName: "Samira Patel",
+    distanceKm: 1.1,
+    postedAgo: "3 days ago",
+    coins: 25,
+    image: "assets/ceramic-table-set.png",
+    details: "Insulated · Flask + 2 Cups",
+  },
 ];
 
 export const DEFAULT_REQUESTS: ItemRequest[] = [
@@ -122,13 +188,13 @@ export const DEFAULT_REQUESTS: ItemRequest[] = [
     id: "req_1",
     itemId: "item_2",
     itemTitle: "Electric Kettle",
-    requesterId: "usr_member",
-    requesterName: "Jordan Lee",
-    donorId: "usr_donor",
-    donorName: "Maria Santos",
+    requesterId: "usr_donor",
+    requesterName: "Maria Santos",
+    donorId: "usr_member",
+    donorName: "Jordan Lee",
     type: "Exchange Proposal",
     exchangeOffer: "Offering a 2-speed countertop fruit blender in great condition.",
-    note: "Hi Maria! I've been looking for an electric kettle for my dorm. Hope the blender is useful!",
+    note: "Hi Jordan! Would love to trade my blender for your electric kettle.",
     pickupTime: "Weekday evenings between 5 PM and 7 PM",
     status: "Pending",
     createdAt: "Nov 24, 2026, 4:15 PM",
@@ -138,7 +204,7 @@ export const DEFAULT_REQUESTS: ItemRequest[] = [
     itemId: "item_4",
     itemTitle: "Ceramic Table Set",
     requesterId: "usr_member",
-    requesterName: "Elena Rostova",
+    requesterName: "Jordan Lee",
     donorId: "usr_donor",
     donorName: "Maria Santos",
     type: "Exchange Proposal",
@@ -161,6 +227,35 @@ export const DEFAULT_REQUESTS: ItemRequest[] = [
     pickupTime: "Anytime tomorrow afternoon",
     status: "Completed",
     createdAt: "Nov 20, 2026, 2:00 PM",
+  },
+  {
+    id: "req_4",
+    itemId: "item_7",
+    itemTitle: "LED Desk Reading Lamp",
+    requesterId: "usr_member",
+    requesterName: "Jordan Lee",
+    donorId: "usr_moderator",
+    donorName: "Alex Chen",
+    type: "Donation Request",
+    note: "Hi Alex! My study lamp just stopped working, this would be fantastic.",
+    pickupTime: "Friday afternoon",
+    status: "Pending",
+    createdAt: "Nov 24, 2026, 1:00 PM",
+  },
+  {
+    id: "req_5",
+    itemId: "item_9",
+    itemTitle: "Ergonomic Mechanical Keyboard",
+    requesterId: "usr_donor",
+    requesterName: "Maria Santos",
+    donorId: "usr_admin",
+    donorName: "Samira Patel",
+    type: "Exchange Proposal",
+    exchangeOffer: "Offering handmade wooden desk organizer box.",
+    note: "Would love this ergonomic keyboard for my work desk!",
+    pickupTime: "Sunday at 11 AM",
+    status: "Accepted",
+    createdAt: "Nov 22, 2026, 10:30 AM",
   },
 ];
 

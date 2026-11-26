@@ -1,7 +1,8 @@
-import { getActiveUser } from "../data/profileData.js";
+import { getActiveUser, getUserNotifications } from "../data/profileData.js";
+import { openActivityModal } from "./activityModal.js";
 export function syncNavigation(user) {
     const activeUser = user || getActiveUser();
-    // 1. Sync Header Avatar & Balance
+    // 1. Sync Header Avatar & Profile Click
     const avatarEl = document.querySelector(".header .avatar");
     if (avatarEl) {
         avatarEl.textContent = activeUser.initials;
@@ -11,12 +12,51 @@ export function syncNavigation(user) {
             window.location.href = "profile.html";
         };
     }
-    const balanceEl = document.getElementById("header-balance") || document.getElementById("coin-balance");
+    // 2. Sync Coin Balance
+    const balanceEl = document.getElementById("header-balance") ||
+        document.getElementById("coin-balance") ||
+        document.querySelector(".header .coins__value");
     if (balanceEl) {
         balanceEl.textContent = String(activeUser.coins);
     }
-    // 2. Role-based Navigation Access Control:
-    // ONLY Community Moderator can see the Moderation link in sidebar
+    // 3. Sync Notification Button on topbar
+    let notifBtn = document.querySelector('.header button[aria-label="Notifications"], .header .icon-btn[aria-label="Notifications"]');
+    const headerActions = document.querySelector(".header__actions");
+    if (!notifBtn && headerActions) {
+        notifBtn = document.createElement("button");
+        notifBtn.className = "icon-btn";
+        notifBtn.type = "button";
+        notifBtn.setAttribute("aria-label", "Notifications");
+        notifBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <span class="icon-btn__badge">0</span>
+    `;
+        const targetBefore = avatarEl || headerActions.firstChild;
+        headerActions.insertBefore(notifBtn, targetBefore);
+    }
+    if (notifBtn) {
+        const notifs = getUserNotifications(activeUser.id);
+        const unreadCount = notifs.filter((n) => !n.read).length;
+        let badge = notifBtn.querySelector(".icon-btn__badge");
+        if (!badge) {
+            badge = document.createElement("span");
+            badge.className = "icon-btn__badge";
+            notifBtn.append(badge);
+        }
+        if (unreadCount > 0) {
+            badge.style.display = "grid";
+            badge.textContent = String(unreadCount);
+        }
+        else {
+            badge.style.display = "none";
+        }
+        notifBtn.onclick = () => {
+            openActivityModal("notifications", () => {
+                syncNavigation(activeUser);
+            });
+        };
+    }
+    // 4. Role-based Navigation Access Control:
     const modLinks = document.querySelectorAll('a[href="moderation.html"], [data-nav="moderation"]');
     modLinks.forEach((el) => {
         if (activeUser.role === "Community Moderator") {
@@ -26,7 +66,6 @@ export function syncNavigation(user) {
             el.style.display = "none";
         }
     });
-    // ONLY System Administrator can see the Admin link in sidebar
     const adminLinks = document.querySelectorAll('a[href="admin.html"], [data-nav="admin"]');
     adminLinks.forEach((el) => {
         if (activeUser.role === "System Administrator") {

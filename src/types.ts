@@ -97,3 +97,25 @@ export interface FilterState {
   condition: "All" | ItemCondition;
   query: string;
 }
+
+export interface CoinTransaction {
+  id: string;
+  userId: string;
+  type: "earned" | "spent";
+  amount: number;
+  title: string;
+  category: string;
+  date: string;
+}
+
+export interface UserNotification {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  date: string;
+  read: boolean;
+  tag?: string;
+  link?: string;
+}
+

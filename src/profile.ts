@@ -1,8 +1,10 @@
-import { getActiveUser, ACTIVITY } from "./data/profileData.js";
+import { getActiveUser, getUserActivities } from "./data/profileData.js";
 import { renderProfile } from "./components/profileCard.js";
 import { createActivityRow } from "./components/activityList.js";
 import { syncNavigation } from "./components/navigation.js";
 import { mountLogout } from "./components/auth.js";
+import { openActivityModal } from "./components/activityModal.js";
+import { openEditProfileModal } from "./components/editProfileModal.js";
 
 function requireElement<T extends HTMLElement>(id: string): T {
   const el = document.getElementById(id);
@@ -11,22 +13,37 @@ function requireElement<T extends HTMLElement>(id: string): T {
 }
 
 function bootstrap(): void {
-  const activeUser = getActiveUser();
-  syncNavigation(activeUser);
-  renderProfile(activeUser);
-  mountLogout();
-
-
   const list = requireElement<HTMLUListElement>("activity-list");
-  list.append(...ACTIVITY.map(createActivityRow));
+  const editBtn = requireElement<HTMLButtonElement>("edit-profile");
 
+  function renderAll(): void {
+    const activeUser = getActiveUser();
+    syncNavigation(activeUser);
+    renderProfile(activeUser);
+
+    // Refresh dynamic activities with up-to-date counts
+    const activities = getUserActivities(activeUser);
+    list.replaceChildren(...activities.map(createActivityRow));
+  }
+
+  // Initial load
+  mountLogout();
+  renderAll();
+
+  // Activity list click delegation
   list.addEventListener("click", (event) => {
     const row = (event.target as HTMLElement).closest<HTMLButtonElement>(".activity-row");
-    if (row) console.log("Open activity:", row.dataset.id);
+    if (!row || !row.dataset.id) return;
+    openActivityModal(row.dataset.id, () => {
+      renderAll();
+    });
   });
 
-  requireElement<HTMLButtonElement>("edit-profile").addEventListener("click", () => {
-    alert(`Editing profile for ${activeUser.name} (${activeUser.role}).`);
+  // Edit profile button
+  editBtn.addEventListener("click", () => {
+    openEditProfileModal(() => {
+      renderAll();
+    });
   });
 }
 
