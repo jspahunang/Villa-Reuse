@@ -102,6 +102,9 @@ export function updateUserProfile(updates) {
     });
     return updated;
 }
+export function updateUserAvatar(avatarUrl) {
+    return updateUserProfile({ avatar: avatarUrl });
+}
 export function logoutUser() {
     try {
         localStorage.removeItem(STORAGE_KEY);

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up & Demo Accounts · Villa-Reuse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .signup-page-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .signup-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .signup-header__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--c-green-100);
+      color: var(--c-green-900);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .signup-header__title {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--c-text);
+      margin: 0 0 10px;
+      line-height: 1.2;
+    }
+    .signup-header__subtitle {
+      font-size: 15px;
+      color: var(--c-muted);
+      max-width: 620px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Demo accounts showcase */
+    .demo-section {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      margin-bottom: 36px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.04);
+    }
+    .demo-section__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--c-border);
+      padding-bottom: 14px;
+    }
+    .demo-section__title {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-section__hint {
+      font-size: 12px;
+      color: var(--c-muted);
+    }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+    .demo-card {
+      background: var(--c-bg);
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .demo-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      border-color: var(--c-green-400, #4ade80);
+    }
+    .demo-card__top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .demo-card__avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--c-green-700);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .demo-card__name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--c-text);
+      line-height: 1.2;
+    }
+    .demo-card__role {
+      font-size: 11px;
+      color: var(--c-muted);
+    }
+    .demo-card__meta {
+      font-size: 11px;
+      color: var(--c-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      background: rgba(0,0,0,0.02);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+    }
+    .demo-card__meta strong {
+      color: var(--c-text);
+    }
+    .demo-card__desc {
+      font-size: 11.5px;
+      color: var(--c-muted);
+      line-height: 1.4;
+      flex-grow: 1;
+      margin: 0;
+    }
+    .demo-card__btn {
+      width: 100%;
+      font-size: 12px;
+      padding: 8px 12px;
+      margin-top: 4px;
+    }
+
+    /* Signup Form Section */
+    .signup-form-section {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-xl);
+      padding: 32px 36px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.04);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .signup-form-section__head {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .signup-form-section__title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0 0 6px;
+    }
+    .signup-form-section__sub {
+      font-size: 13px;
+      color: var(--c-muted);
+      margin: 0;
+    }
+    .signup-alert {
+      display: none;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .signup-alert--error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+    .signup-alert--success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+    .signup-switch-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--c-muted);
+    }
+    .signup-switch-link a {
+      color: var(--c-green-800);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .signup-switch-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a class="header__brand" href="index.html">
+      <span class="header__logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-14 14z"/><path d="M5 19l7-7"/></svg>
+      </span>
+      <span>
+        <span class="header__title">Villa-Reuse</span>
+        <span class="header__tagline">GIVE WELL. LIVE LIGHTER.</span>
+      </span>
+    </a>
+
+    <div class="header__actions">
+      <a class="coins" href="profile.html" aria-label="ReUse Coins balance" style="text-decoration:none; color:inherit;">
+        <span class="coins__icon">$</span>
+        <span class="coins__label">ReUse Coins</span>
+        <span class="coins__value" id="header-balance">120</span>
+      </a>
+      <a class="avatar" href="profile.html" aria-label="Your profile" style="text-decoration:none;">YO</a>
+    </div>
+  </header>
+
+  <div class="app">
+    <aside class="sidebar">
+      <nav class="sidebar__nav">
+        <a class="sidebar__link" href="index.html">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 3 2 11h3v10h6v-6h2v6h6V11h3z"/></svg>
+          Home
+        </a>
+        <a class="sidebar__link" href="donate.html">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M10.5 3h3v7.5H21v3h-7.5V21h-3v-7.5H3v-3h7.5z"/></svg>
+          Post Item
+        </a>
+        <a class="sidebar__link" href="requests.html">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg>
+          Requests
+        </a>
+        <a class="sidebar__link" href="moderation.html" data-nav="moderation">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Moderation
+        </a>
+        <a class="sidebar__link" href="admin.html" data-nav="admin">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Admin
+        </a>
+        <a class="sidebar__link" href="impact.html">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          Impact
+        </a>
+        <a class="sidebar__link" href="profile.html">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+          Profile
+        </a>
+        <a class="sidebar__link sidebar__link--active" href="signup.html">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          Sign Up / Demo
+        </a>
+      </nav>
+
+      <div class="sidebar-card">
+        <svg class="sidebar-card__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1f7a3f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-14 14z"/><path d="M5 19l7-7"/></svg>
+        <h3 class="sidebar-card__title">Small acts, shared impact.</h3>
+        <p class="sidebar-card__text">Every item passed on keeps value in our community.</p>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="signup-page-container">
+        <!-- Top Title -->
+        <div class="signup-header">
+          <span class="signup-header__badge">🌱 Welcome to Villa-Reuse</span>
+          <h1 class="signup-header__title">Sign Up or Test Demo Accounts</h1>
+          <p class="signup-header__subtitle">
+            Explore the platform through our 4 pre-configured demo users to experience all role capabilities, or register your own neighborhood account.
+          </p>
+        </div>
+
+        <!-- Section 1: Demo Accounts Showcase -->
+        <section class="demo-section">
+          <div class="demo-section__head">
+            <h2 class="demo-section__title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1f7a3f" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Featured Demo Personas
+            </h2>
+            <span class="demo-section__hint">All demo accounts share password: <code style="background:var(--c-green-100); color:var(--c-green-900); padding:2px 6px; border-radius:4px; font-weight:700;">villa2026</code></span>
+          </div>
+
+          <div class="demo-grid">
+            <!-- Demo 1: Member -->
+            <article class="demo-card">
+              <div class="demo-card__top">
+                <div class="demo-card__avatar" style="background:#166534;">JL</div>
+                <div>
+                  <div class="demo-card__name">Jordan Lee</div>
+                  <div class="demo-card__role">Community Member</div>
+                </div>
+              </div>
+              <div class="demo-card__meta">
+                <span>Email: <strong>member@villareuse.org</strong></span>
+                <span>Area: <strong>Downtown Villa</strong></span>
+                <span>Coins: <strong>120 ReUse Coins</strong></span>
+              </div>
+              <p class="demo-card__desc">Browse local items, send donation claims, propose swaps, and earn coins.</p>
+              <button class="btn btn--solid btn--sm demo-card__btn" type="button" data-demo-role="member">
+                1-Click Sign In as Jordan
+              </button>
+            </article>
+
+            <!-- Demo 2: Donor -->
+            <article class="demo-card">
+              <div class="demo-card__top">
+                <div class="demo-card__avatar" style="background:#854d0e;">MS</div>
+                <div>
+                  <div class="demo-card__name">Maria Santos</div>
+                  <div class="demo-card__role">Item Donor / Provider</div>
+                </div>
+              </div>
+              <div class="demo-card__meta">
+                <span>Email: <strong>donor@villareuse.org</strong></span>
+                <span>Area: <strong>Villa Verde East</strong></span>
+                <span>Coins: <strong>340 ReUse Coins</strong></span>
+              </div>
+              <p class="demo-card__desc">Post pre-loved goods, edit listing pictures, and coordinate pickup claims.</p>
+              <button class="btn btn--solid btn--sm demo-card__btn" type="button" data-demo-role="donor" style="background:#854d0e; border-color:#854d0e;">
+                1-Click Sign In as Maria
+              </button>
+            </article>
+
+            <!-- Demo 3: Moderator -->
+            <article class="demo-card">
+              <div class="demo-card__top">
+                <div class="demo-card__avatar" style="background:#5b21b6;">AC</div>
+                <div>
+                  <div class="demo-card__name">Alex Chen</div>
+                  <div class="demo-card__role">Community Moderator</div>
+                </div>
+              </div>
+              <div class="demo-card__meta">
+                <span>Email: <strong>moderator@villareuse.org</strong></span>
+                <span>Area: <strong>Oakridge District</strong></span>
+                <span>Coins: <strong>450 ReUse Coins</strong></span>
+              </div>
+              <p class="demo-card__desc">Review community reports, flag unsafe listings, and resolve dispute tickets.</p>
+              <button class="btn btn--solid btn--sm demo-card__btn" type="button" data-demo-role="moderator" style="background:#5b21b6; border-color:#5b21b6;">
+                1-Click Sign In as Alex
+              </button>
+            </article>
+
+            <!-- Demo 4: Admin -->
+            <article class="demo-card">
+              <div class="demo-card__top">
+                <div class="demo-card__avatar" style="background:#3730a3;">SP</div>
+                <div>
+                  <div class="demo-card__name">Samira Patel</div>
+                  <div class="demo-card__role">System Administrator</div>
+                </div>
+              </div>
+              <div class="demo-card__meta">
+                <span>Email: <strong>admin@villareuse.org</strong></span>
+                <span>Area: <strong>Villa Central HQ</strong></span>
+                <span>Coins: <strong>999 ReUse Coins</strong></span>
+              </div>
+              <p class="demo-card__desc">Manage users, audit trail, governance settings, and overall system metrics.</p>
+              <button class="btn btn--solid btn--sm demo-card__btn" type="button" data-demo-role="admin" style="background:#3730a3; border-color:#3730a3;">
+                1-Click Sign In as Samira
+              </button>
+            </article>
+          </div>
+        </section>
+
+        <!-- Section 2: Create New Account Form -->
+        <section class="signup-form-section">
+          <div class="signup-form-section__head">
+            <h2 class="signup-form-section__title">Register a New Account</h2>
+            <p class="signup-form-section__sub">Create your account and receive <strong>100 free ReUse Coins</strong> as a welcome gift!</p>
+          </div>
+
+          <div id="signup-alert" class="signup-alert" role="alert"></div>
+
+          <form id="signup-form" novalidate>
+            <div class="field">
+              <label class="field__label" for="signup-name">Full Name <span class="req">*</span></label>
+              <input class="field__input" id="signup-name" type="text" placeholder="e.g. Taylor Morgan" required />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="signup-email">Email Address <span class="req">*</span></label>
+              <input class="field__input" id="signup-email" type="email" placeholder="e.g. taylor@example.com" required />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="signup-password">Password <span class="req">*</span></label>
+              <input class="field__input" id="signup-password" type="password" placeholder="Create a password" required />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="signup-neighborhood">Neighborhood / District <span class="req">*</span></label>
+              <select class="field__input field__select" id="signup-neighborhood" required>
+                <option value="Downtown Villa">Downtown Villa</option>
+                <option value="Villa Verde East">Villa Verde East</option>
+                <option value="Oakridge District">Oakridge District</option>
+                <option value="Villa Heights">Villa Heights</option>
+                <option value="South Gate">South Gate</option>
+                <option value="Riverside Community">Riverside Community</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="signup-role">Primary Role <span class="req">*</span></label>
+              <select class="field__input field__select" id="signup-role" required>
+                <option value="Community Member">Community Member (Borrow, browse & swap)</option>
+                <option value="Item Donor / Provider">Item Donor / Provider (List & share items)</option>
+              </select>
+            </div>
+
+            <button class="btn btn--solid btn--lg" type="submit" id="signup-submit-btn" style="width:100%; margin-top:16px;">
+              Create Account & Claim 100 Coins
+            </button>
+          </form>
+
+          <div class="signup-switch-link">
+            Already have an account or prefer the role portal? <a href="login.html">Sign in here</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="dist/signup.js"></script>
+</body>
+</html>

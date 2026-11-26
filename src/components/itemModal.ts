@@ -1,6 +1,7 @@
 import type { Item, ItemRequest, ListingReport } from "../types.js";
 import { createRequest, submitReport } from "../data/systemStore.js";
 import { getActiveUser } from "../data/profileData.js";
+import { openEditPhotoModal } from "./editPhotoModal.js";
 
 function escapeHtml(value: string): string {
   const div = document.createElement("div");
@@ -18,7 +19,10 @@ export function openItemModal(item: Item, onUpdate?: () => void): void {
     modalOverlay = document.createElement("div");
     modalOverlay.id = "item-modal-overlay";
     modalOverlay.className = "modal-overlay";
+    modalOverlay.style.zIndex = "150";
     document.body.append(modalOverlay);
+  } else {
+    modalOverlay.style.zIndex = "150";
   }
 
   modalOverlay.innerHTML = `
@@ -32,6 +36,11 @@ export function openItemModal(item: Item, onUpdate?: () => void): void {
             <span class="card__status badge--status-${(item.status || "available").toLowerCase()}">${escapeHtml(item.status)}</span>
             <span class="card__type-pill ${isExchange ? "badge--exchange" : "badge--donation"}">${isExchange ? "Exchange Item" : "Free Donation"}</span>
           </div>
+          ${
+            isDonor
+              ? `<button class="btn btn--outline btn--xs" id="item-modal-edit-photo-btn" type="button" style="margin-top: 10px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;">📷 Edit Listing Picture</button>`
+              : ""
+          }
         </div>
 
         <div class="modal-info">
@@ -150,12 +159,39 @@ export function openItemModal(item: Item, onUpdate?: () => void): void {
   function closeModal(): void {
     modalOverlay?.classList.remove("modal-overlay--open");
     document.body.style.overflow = "";
+    document.removeEventListener("keydown", handleItemModalEsc);
   }
+
+  function handleItemModalEsc(e: KeyboardEvent): void {
+    if (e.key === "Escape") {
+      // If edit photo modal is open on top, let it close first
+      const editPhotoModal = document.getElementById("edit-photo-modal-overlay");
+      if (editPhotoModal && editPhotoModal.classList.contains("modal-overlay--open")) {
+        return;
+      }
+      e.stopPropagation();
+      closeModal();
+    }
+  }
+  document.addEventListener("keydown", handleItemModalEsc);
 
   modalOverlay.querySelector(".modal-close")?.addEventListener("click", closeModal);
   modalOverlay.addEventListener("click", (e) => {
     if (e.target === modalOverlay) closeModal();
   });
+
+  // Edit photo button for donor
+  const editPhotoBtn = modalOverlay.querySelector<HTMLButtonElement>("#item-modal-edit-photo-btn");
+  if (editPhotoBtn) {
+    editPhotoBtn.addEventListener("click", () => {
+      openEditPhotoModal(item, (newUrl) => {
+        item.image = newUrl;
+        const imgEl = modalOverlay?.querySelector<HTMLImageElement>(".modal-media img");
+        if (imgEl) imgEl.src = newUrl;
+        if (onUpdate) onUpdate();
+      });
+    });
+  }
 
   // Handle Request Submission
   const requestForm = modalOverlay.querySelector<HTMLFormElement>("#item-request-form");

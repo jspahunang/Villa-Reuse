@@ -69,10 +69,6 @@
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
           Profile
         </a>
-        <a class="sidebar__link" href="login.html">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-          Switch Account
-        </a>
       </nav>
       <div class="sidebar-card">
         <svg class="sidebar-card__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1f7a3f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-14 14z"/><path d="M5 19l7-7"/></svg>
@@ -87,7 +83,18 @@
 
       <div class="profile-columns">
         <section class="card profile-card">
-          <div class="profile-card__avatar" id="profile-avatar">YO</div>
+          <div style="position:relative; display:inline-block; margin:0 auto;">
+            <div class="profile-card__avatar" id="profile-avatar" style="cursor:pointer;" title="Click to change photo">YO</div>
+            <button type="button" id="edit-avatar-badge" class="avatar-camera-btn" title="Edit photo" aria-label="Edit photo" style="position:absolute; bottom:0; right:0; width:30px; height:30px; border-radius:50%; background:var(--c-surface); border:1.5px solid var(--c-border); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.12); color:var(--c-text);">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </button>
+          </div>
+          <div style="margin-top:6px;">
+            <button type="button" id="edit-avatar-btn" style="background:none; border:none; color:var(--c-green-800); font-size:12px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px; text-decoration:underline;">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Edit Photo
+            </button>
+          </div>
           <h2 class="profile-card__name" id="profile-name">—</h2>
           <span class="role-badge" id="profile-role" style="display:inline-block; margin: 4px 0 8px; padding: 4px 12px; background: var(--c-green-100); color: var(--c-green-900); border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; letter-spacing: 0.05em;">Community Member</span>
           <p class="profile-card__email" id="profile-email">—</p>

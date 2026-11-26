@@ -5,6 +5,7 @@ import { syncNavigation } from "./components/navigation.js";
 import { mountLogout } from "./components/auth.js";
 import { openActivityModal } from "./components/activityModal.js";
 import { openEditProfileModal } from "./components/editProfileModal.js";
+import { openEditAvatarModal } from "./components/editAvatarModal.js";
 function requireElement(id) {
     const el = document.getElementById(id);
     if (!el)
@@ -40,5 +41,14 @@ function bootstrap() {
             renderAll();
         });
     });
+    // Edit Avatar button & avatar click
+    const handleOpenAvatar = () => {
+        openEditAvatarModal(() => {
+            renderAll();
+        });
+    };
+    document.getElementById("edit-avatar-btn")?.addEventListener("click", handleOpenAvatar);
+    document.getElementById("edit-avatar-badge")?.addEventListener("click", handleOpenAvatar);
+    document.getElementById("profile-avatar")?.addEventListener("click", handleOpenAvatar);
 }
 bootstrap();

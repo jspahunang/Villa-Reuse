@@ -46,6 +46,28 @@ function bootstrap() {
     const uploader = mountPhotoUploader(zone, photoInput, preview, uploadLabel, (msg) => {
         alert(msg);
     });
+    // Sample photo presets
+    document.querySelectorAll("#donate-photo-presets [data-preset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const preset = btn.dataset.preset;
+            if (preset) {
+                uploader.setDataUrl(preset, `Sample: ${btn.textContent?.trim() || preset}`);
+            }
+        });
+    });
+    // Custom photo URL
+    const customUrlInput = document.getElementById("donate-photo-url");
+    const applyUrlBtn = document.getElementById("donate-apply-url-btn");
+    if (customUrlInput && applyUrlBtn) {
+        applyUrlBtn.addEventListener("click", () => {
+            const val = customUrlInput.value.trim();
+            if (!val) {
+                customUrlInput.focus();
+                return;
+            }
+            uploader.setDataUrl(val, "Custom Image URL");
+        });
+    }
     function refreshCoins() {
         const value = estimateCoins(category.value, getCondition());
         const text = String(value);
@@ -73,9 +95,12 @@ function bootstrap() {
         const earnedCoins = Number(coinAmount.textContent) || 20;
         // Pick image: uploaded image or fallback asset based on category
         let itemImage = "assets/denim-jacket.png";
-        const uploadedFile = uploader.getFile();
-        if (uploadedFile) {
-            itemImage = preview.src || "assets/denim-jacket.png";
+        const uploadedDataUrl = uploader.getDataUrl();
+        if (uploadedDataUrl) {
+            itemImage = uploadedDataUrl;
+        }
+        else if (preview.src && !preview.hidden) {
+            itemImage = preview.src;
         }
         else {
             if (category.value === "Appliances")

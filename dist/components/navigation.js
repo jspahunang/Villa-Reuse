@@ -5,7 +5,15 @@ export function syncNavigation(user) {
     // 1. Sync Header Avatar & Profile Click
     const avatarEl = document.querySelector(".header .avatar");
     if (avatarEl) {
-        avatarEl.textContent = activeUser.initials;
+        if (activeUser.avatar) {
+            avatarEl.innerHTML = `<img src="${activeUser.avatar}" alt="${activeUser.name}" style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;" />`;
+            avatarEl.style.overflow = "hidden";
+            avatarEl.style.padding = "0";
+        }
+        else {
+            avatarEl.innerHTML = "";
+            avatarEl.textContent = activeUser.initials;
+        }
         avatarEl.title = `${activeUser.name} (${activeUser.role}) · Click to open Profile`;
         avatarEl.style.cursor = "pointer";
         avatarEl.onclick = () => {

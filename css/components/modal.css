@@ -12,6 +12,18 @@
   justify-content: center;
 }
 
+#activity-modal-overlay {
+  z-index: 100;
+}
+
+#item-modal-overlay {
+  z-index: 150;
+}
+
+#edit-photo-modal-overlay {
+  z-index: 250;
+}
+
 .modal-overlay--open {
   display: flex;
 }

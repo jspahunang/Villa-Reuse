@@ -29,6 +29,7 @@ export interface Profile {
   wasteSavedKg: number;
   role: UserRole;
   roleScope: string;
+  avatar?: string;
 }
 
 export const DEMO_USERS: Record<string, Profile> = {
@@ -139,6 +140,10 @@ export function updateUserProfile(updates: Partial<Profile>): Profile {
   });
 
   return updated;
+}
+
+export function updateUserAvatar(avatarUrl: string): Profile {
+  return updateUserProfile({ avatar: avatarUrl });
 }
 
 export function logoutUser(): void {

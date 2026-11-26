@@ -20,6 +20,7 @@ import {
   updateRequestStatus,
 } from "../data/systemStore.js";
 import { openItemModal } from "./itemModal.js";
+import { openEditPhotoModal } from "./editPhotoModal.js";
 
 function escapeHtml(value: string): string {
   const div = document.createElement("div");
@@ -195,6 +196,7 @@ function buildDonationsHtml(user: Profile): string {
                     </select>
                   </div>
                   <div class="act-item-card__btns">
+                    <button class="btn btn--outline btn--xs" type="button" data-action="edit-item-photo" data-id="${item.id}">📷 Edit Picture</button>
                     <button class="btn btn--outline btn--xs" type="button" data-action="view-item-modal" data-id="${item.id}">View Card</button>
                     <button class="btn btn--danger btn--xs" type="button" data-action="delete-item" data-id="${item.id}">Remove</button>
                   </div>
@@ -683,6 +685,26 @@ function attachActivityListeners(
       if (item) {
         openItemModal(item, () => {
           renderActivityContent(activityId, user, onUpdate);
+          if (onUpdate) onUpdate();
+        });
+      }
+    };
+  });
+
+  // Edit item photo
+  container.querySelectorAll<HTMLButtonElement>('[data-action="edit-item-photo"]').forEach((btn) => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const itemId = btn.dataset.id;
+      if (!itemId) return;
+      const item = getItems().find((i) => i.id === itemId);
+      if (item) {
+        openEditPhotoModal(item, (newUrl) => {
+          // Immediately update card in DOM as well as re-rendering:
+          const cardImg = container.querySelector<HTMLImageElement>(`article[data-item-id="${item.id}"] .act-item-card__media img`);
+          if (cardImg) cardImg.src = newUrl;
+
+          renderActivityContent("donations", user, onUpdate);
           if (onUpdate) onUpdate();
         });
       }

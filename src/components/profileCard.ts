@@ -2,10 +2,28 @@ import type { Profile } from "../data/profileData.js";
 
 export function renderProfile(profile: Profile): void {
   const avatarEl = document.getElementById("profile-avatar");
-  if (avatarEl) avatarEl.textContent = profile.initials;
+  if (avatarEl) {
+    if (profile.avatar) {
+      avatarEl.innerHTML = `<img src="${profile.avatar}" alt="${profile.name}" style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;" />`;
+      avatarEl.style.overflow = "hidden";
+      avatarEl.style.padding = "0";
+    } else {
+      avatarEl.innerHTML = "";
+      avatarEl.textContent = profile.initials;
+    }
+  }
 
-  const headerAvatarEl = document.querySelector(".header .avatar");
-  if (headerAvatarEl) headerAvatarEl.textContent = profile.initials;
+  const headerAvatarEl = document.querySelector<HTMLElement>(".header .avatar");
+  if (headerAvatarEl) {
+    if (profile.avatar) {
+      headerAvatarEl.innerHTML = `<img src="${profile.avatar}" alt="${profile.name}" style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;" />`;
+      headerAvatarEl.style.overflow = "hidden";
+      headerAvatarEl.style.padding = "0";
+    } else {
+      headerAvatarEl.innerHTML = "";
+      headerAvatarEl.textContent = profile.initials;
+    }
+  }
 
   const nameEl = document.getElementById("profile-name");
   if (nameEl) nameEl.textContent = profile.name;

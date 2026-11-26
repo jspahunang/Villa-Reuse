@@ -396,6 +396,25 @@ export function updateItemStatus(itemId, status) {
         saveItems(items);
     }
 }
+export function updateItem(itemId, updates) {
+    const items = getItems();
+    const index = items.findIndex((i) => i.id === itemId);
+    if (index !== -1) {
+        items[index] = { ...items[index], ...updates };
+        saveItems(items);
+        // Also mutate in-memory DEFAULT_ITEMS fallback
+        const defaultIndex = DEFAULT_ITEMS.findIndex((i) => i.id === itemId);
+        if (defaultIndex !== -1) {
+            DEFAULT_ITEMS[defaultIndex] = { ...DEFAULT_ITEMS[defaultIndex], ...updates };
+        }
+        addAuditLog({
+            actor: items[index].donorName,
+            role: "Item Donor / Provider",
+            action: "Item Listing Updated",
+            details: `Updated "${items[index].title}" details/picture`,
+        });
+    }
+}
 export function setItemHidden(itemId, hidden) {
     const items = getItems();
     const index = items.findIndex((i) => i.id === itemId);
