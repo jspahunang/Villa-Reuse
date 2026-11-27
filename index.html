@@ -132,6 +132,15 @@
             <option value="Good">Good</option>
             <option value="Fair">Fair</option>
           </select>
+
+          <span style="font-size:11px; font-weight:700; color:var(--c-muted); text-transform:uppercase; letter-spacing:0.06em; margin-left:auto;">Sort by:</span>
+          <select id="sort-select" class="filter-select" aria-label="Sort listings">
+            <option value="newest">Newest First</option>
+            <option value="coins-low">Coins: Low to High</option>
+            <option value="coins-high">Coins: High to Low</option>
+            <option value="distance">Distance: Closest</option>
+            <option value="title-az">Name: A to Z</option>
+          </select>
         </div>
 
         <div class="grid" id="item-grid"></div>

@@ -1,7 +1,7 @@
 import { refreshItems } from "./data/items.js";
 import { mountFilterChips } from "./components/filterChips.js";
 import { mountSearchBar } from "./components/searchBar.js";
-import { filterItems, renderItemGrid } from "./components/itemGrid.js";
+import { filterItems, sortItems, renderItemGrid } from "./components/itemGrid.js";
 import { openItemModal } from "./components/itemModal.js";
 import { syncNavigation } from "./components/navigation.js";
 import { mountLogout } from "./components/auth.js";
@@ -20,10 +20,12 @@ function bootstrap() {
     const search = requireElement("search-input");
     const typeFilter = requireElement("type-filter");
     const conditionFilter = requireElement("condition-filter");
+    const sortSelect = document.getElementById("sort-select");
     let currentCategory = "All";
     let currentQuery = "";
     let currentType = "All";
     let currentCondition = "All";
+    let currentSort = "newest";
     function render() {
         const allItems = refreshItems();
         const filtered = filterItems(allItems, {
@@ -32,7 +34,8 @@ function bootstrap() {
             listingType: currentType,
             condition: currentCondition,
         });
-        renderItemGrid(grid, counter, filtered, (item) => {
+        const sorted = sortItems(filtered, currentSort);
+        renderItemGrid(grid, counter, sorted, (item) => {
             openItemModal(item, () => {
                 render();
             });
@@ -55,6 +58,12 @@ function bootstrap() {
         currentCondition = conditionFilter.value;
         render();
     });
+    if (sortSelect) {
+        sortSelect.addEventListener("change", () => {
+            currentSort = sortSelect.value || "newest";
+            render();
+        });
+    }
     // Navigate hero donate button to post item
     document.getElementById("donate-btn")?.addEventListener("click", () => {
         window.location.href = "donate.html";

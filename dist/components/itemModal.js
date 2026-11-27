@@ -1,6 +1,7 @@
-import { createRequest, submitReport } from "../data/systemStore.js";
+import { createRequest, submitReport, deleteItem } from "../data/systemStore.js";
 import { getActiveUser, addUserNotification } from "../data/profileData.js";
 import { openEditPhotoModal } from "./editPhotoModal.js";
+import { openEditItemModal } from "./editItemModal.js";
 function escapeHtml(value) {
     const div = document.createElement("div");
     div.textContent = value;
@@ -33,7 +34,11 @@ export function openItemModal(item, onUpdate) {
             <span class="card__type-pill ${isExchange ? "badge--exchange" : "badge--donation"}">${isExchange ? "Exchange Item" : "Free Donation"}</span>
           </div>
           ${isDonor
-        ? `<button class="btn btn--outline btn--xs" id="item-modal-edit-photo-btn" type="button" style="margin-top: 10px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;">📷 Edit Listing Picture</button>`
+        ? `<div style="display:flex; flex-direction:column; gap:6px; margin-top:10px; width:100%;">
+                   <button class="btn btn--solid btn--xs" id="item-modal-edit-details-btn" type="button" style="width:100%; display:flex; align-items:center; justify-content:center; gap:6px;">✏️ Edit Listing Details</button>
+                   <button class="btn btn--outline btn--xs" id="item-modal-edit-photo-btn" type="button" style="width:100%; display:flex; align-items:center; justify-content:center; gap:6px;">📷 Change Picture</button>
+                   <button class="btn btn--danger btn--xs" id="item-modal-delete-btn" type="button" style="width:100%; display:flex; align-items:center; justify-content:center; gap:6px; color:#b23b2e; border:1px solid #fecaca; background:#fef2f2;">🗑️ Delete Listing</button>
+                 </div>`
         : ""}
         </div>
 
@@ -164,6 +169,38 @@ export function openItemModal(item, onUpdate) {
         if (e.target === modalOverlay)
             closeModal();
     });
+    // Edit details button for donor
+    const editDetailsBtn = modalOverlay.querySelector("#item-modal-edit-details-btn");
+    if (editDetailsBtn) {
+        editDetailsBtn.addEventListener("click", () => {
+            closeModal();
+            openEditItemModal(item, (updated) => {
+                if (onUpdate)
+                    onUpdate();
+                openItemModal(updated, onUpdate);
+            }, () => {
+                if (onUpdate)
+                    onUpdate();
+            });
+        });
+    }
+    // Delete listing button for donor
+    const deleteListingBtn = modalOverlay.querySelector("#item-modal-delete-btn");
+    if (deleteListingBtn) {
+        deleteListingBtn.addEventListener("click", () => {
+            if (confirm(`Are you sure you want to permanently delete "${item.title}"?`)) {
+                deleteItem(item.id, activeUser.name);
+                addUserNotification(activeUser.id, {
+                    title: "Listing Removed",
+                    message: `Your listing "${item.title}" has been deleted.`,
+                    tag: "Item",
+                });
+                closeModal();
+                if (onUpdate)
+                    onUpdate();
+            }
+        });
+    }
     // Edit photo button for donor
     const editPhotoBtn = modalOverlay.querySelector("#item-modal-edit-photo-btn");
     if (editPhotoBtn) {

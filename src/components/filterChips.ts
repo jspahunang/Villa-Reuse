@@ -2,12 +2,13 @@ import type { CategoryFilter } from "../types.js";
 
 const FILTERS: CategoryFilter[] = [
   "All",
-  "Clothes",
-  "Appliances",
-  "Books",
+  "Clothing",
   "School Supplies",
   "Household Items",
   "Furniture",
+  "Electronics",
+  "Kitchen Items",
+  "Books",
   "Others",
 ];
 

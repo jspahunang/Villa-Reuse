@@ -1,11 +1,12 @@
 const FILTERS = [
     "All",
-    "Clothes",
-    "Appliances",
-    "Books",
+    "Clothing",
     "School Supplies",
     "Household Items",
     "Furniture",
+    "Electronics",
+    "Kitchen Items",
+    "Books",
     "Others",
 ];
 export function mountFilterChips(container, onSelect) {

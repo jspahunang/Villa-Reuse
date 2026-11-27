@@ -423,6 +423,21 @@ export function setItemHidden(itemId, hidden) {
         saveItems(items);
     }
 }
+export function deleteItem(itemId, actorName = "Donor") {
+    const items = getItems();
+    const index = items.findIndex((i) => i.id === itemId);
+    if (index !== -1) {
+        const title = items[index].title;
+        items[index].hidden = true;
+        saveItems(items);
+        addAuditLog({
+            actor: actorName,
+            role: "Item Donor / Provider",
+            action: "Item Listing Removed",
+            details: `Removed listing "${title}" (#${itemId})`,
+        });
+    }
+}
 // ------------------- REQUESTS -------------------
 export function getRequests() {
     return readFromStorage(REQUESTS_KEY, DEFAULT_REQUESTS);

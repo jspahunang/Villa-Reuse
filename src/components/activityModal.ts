@@ -24,6 +24,7 @@ import {
 } from "../data/systemStore.js";
 import { openItemModal } from "./itemModal.js";
 import { openEditPhotoModal } from "./editPhotoModal.js";
+import { openEditItemModal } from "./editItemModal.js";
 
 function escapeHtml(value: string): string {
   const div = document.createElement("div");
@@ -199,7 +200,8 @@ function buildDonationsHtml(user: Profile): string {
                     </select>
                   </div>
                   <div class="act-item-card__btns">
-                    <button class="btn btn--outline btn--xs" type="button" data-action="edit-item-photo" data-id="${item.id}">📷 Edit Picture</button>
+                    <button class="btn btn--solid btn--xs" type="button" data-action="edit-item-details" data-id="${item.id}">✏️ Edit Details</button>
+                    <button class="btn btn--outline btn--xs" type="button" data-action="edit-item-photo" data-id="${item.id}">📷 Picture</button>
                     <button class="btn btn--outline btn--xs" type="button" data-action="view-item-modal" data-id="${item.id}">View Card</button>
                     <button class="btn btn--danger btn--xs" type="button" data-action="delete-item" data-id="${item.id}">Remove</button>
                   </div>
@@ -690,6 +692,28 @@ function attachActivityListeners(
           renderActivityContent(activityId, user, onUpdate);
           if (onUpdate) onUpdate();
         });
+      }
+    };
+  });
+
+  // Edit item details
+  container.querySelectorAll<HTMLButtonElement>('[data-action="edit-item-details"]').forEach((btn) => {
+    btn.onclick = () => {
+      const itemId = btn.dataset.id;
+      if (!itemId) return;
+      const item = getItems().find((i) => i.id === itemId);
+      if (item) {
+        openEditItemModal(
+          item,
+          () => {
+            renderActivityContent("donations", user, onUpdate);
+            if (onUpdate) onUpdate();
+          },
+          () => {
+            renderActivityContent("donations", user, onUpdate);
+            if (onUpdate) onUpdate();
+          }
+        );
       }
     };
   });

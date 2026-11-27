@@ -1,11 +1,14 @@
 export type Category =
-  | "Clothes"
-  | "Appliances"
-  | "Books"
+  | "Clothing"
   | "School Supplies"
   | "Household Items"
   | "Furniture"
-  | "Others";
+  | "Electronics"
+  | "Kitchen Items"
+  | "Books"
+  | "Others"
+  | "Clothes"
+  | "Appliances";
 
 export type CategoryFilter = "All" | Category;
 
