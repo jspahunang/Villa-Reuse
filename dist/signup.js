@@ -1,4 +1,5 @@
-import { DEMO_USERS, setActiveUser } from "./data/profileData.js";
+import { DEMO_USERS, setActiveUser, addUserTransaction, addUserNotification, saveRegisteredUser, } from "./data/profileData.js";
+import { addUser } from "./data/systemStore.js";
 import { syncNavigation } from "./components/navigation.js";
 const ROLE_REDIRECT = {
     member: "index.html",
@@ -95,21 +96,37 @@ function bootstrap() {
                     : "Post items, browse listings, request exchanges/donations, and manage your posts.",
             };
             // Add a welcome transaction to localStorage
-            const welcomeTx = [
-                {
-                    id: `tx_${Date.now()}`,
-                    amount: 100,
-                    description: "Welcome gift: joining Villa-Reuse community",
-                    date: "Just now",
-                    type: "earned",
-                },
-            ];
-            try {
-                localStorage.setItem(`villa_reuse_transactions_${newUserId}`, JSON.stringify(welcomeTx));
-            }
-            catch {
-                // ignore
-            }
+            const now = new Date();
+            const dateStr = `${now.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}`;
+            const welcomeTx = {
+                id: `tx_${Date.now()}`,
+                userId: newUserId,
+                type: "earned",
+                amount: 100,
+                title: "Welcome grant: joined Villa-Reuse community",
+                category: "Welcome Grant",
+                date: dateStr,
+            };
+            addUserTransaction(newUserId, welcomeTx);
+            // Add a welcome notification
+            addUserNotification(newUserId, {
+                title: "Welcome to Villa-Reuse!",
+                message: "Your account is active with 100 free ReUse Coins. Start browsing or post an item today!",
+                tag: "Welcome",
+            });
+            // Add user to system store so they appear in Admin User Management
+            addUser({
+                id: newUserId,
+                name,
+                email,
+                role,
+                neighborhood,
+                status: "Active",
+                itemsCount: 0,
+                joinedYear: new Date().getFullYear(),
+            });
+            // Save to registered users registry for subsequent logins
+            saveRegisteredUser(newProfile, password);
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.textContent = "Setting up account...";

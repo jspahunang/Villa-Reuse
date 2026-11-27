@@ -447,7 +447,7 @@ export function updateRequestStatus(requestId, status, actorName = "Item Donor")
     const requests = getRequests();
     const req = requests.find((r) => r.id === requestId);
     if (!req)
-        return;
+        return undefined;
     req.status = status;
     saveRequests(requests);
     if (status === "Accepted") {
@@ -465,6 +465,7 @@ export function updateRequestStatus(requestId, status, actorName = "Item Donor")
         action: `Request ${status}`,
         details: `Request for "${req.itemTitle}" marked as ${status}`,
     });
+    return req;
 }
 // ------------------- REPORTS -------------------
 export function getReports() {
@@ -520,6 +521,20 @@ export function addAuditLog(entry) {
 // ------------------- USERS -------------------
 export function getUsers() {
     return readFromStorage(USERS_KEY, DEFAULT_USERS);
+}
+export function addUser(user) {
+    const users = getUsers();
+    const exists = users.some((u) => u.id === user.id || u.email.toLowerCase() === user.email.toLowerCase());
+    if (!exists) {
+        users.push(user);
+        writeToStorage(USERS_KEY, users);
+        addAuditLog({
+            actor: user.name,
+            role: user.role,
+            action: "New User Registered",
+            details: `${user.name} (${user.email}) registered as ${user.role} in ${user.neighborhood}`,
+        });
+    }
 }
 export function toggleUserStatus(userId, actorName = "Admin", actorId) {
     if (actorId && actorId === userId)

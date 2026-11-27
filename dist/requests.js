@@ -1,6 +1,7 @@
 import { getRequests, updateRequestStatus } from "./data/systemStore.js";
 import { syncNavigation } from "./components/navigation.js";
 import { mountLogout } from "./components/auth.js";
+import { setActiveUser, addUserTransaction, addUserNotification } from "./data/profileData.js";
 function escapeHtml(value) {
     const div = document.createElement("div");
     div.textContent = value;
@@ -17,9 +18,19 @@ function bootstrap() {
     let currentTab = "incoming";
     function render() {
         const allRequests = getRequests();
-        // In demo, if activeUser is donor or admin, show all incoming; otherwise show requests for their items or all for easy testing
-        const incoming = allRequests.filter((r) => r.donorName === activeUser.name || activeUser.role === "Item Donor / Provider" || activeUser.role === "System Administrator");
-        const sent = allRequests.filter((r) => r.requesterName === activeUser.name || activeUser.role === "Community Member");
+        // User request filtering: Admin sees all; regular users see only their own incoming and sent requests
+        const incoming = allRequests.filter((r) => {
+            if (activeUser.role === "System Administrator")
+                return true;
+            return (r.donorId === activeUser.id ||
+                r.donorName.toLowerCase() === activeUser.name.toLowerCase());
+        });
+        const sent = allRequests.filter((r) => {
+            if (activeUser.role === "System Administrator")
+                return true;
+            return (r.requesterId === activeUser.id ||
+                r.requesterName.toLowerCase() === activeUser.name.toLowerCase());
+        });
         countIncoming.textContent = String(incoming.length);
         countSent.textContent = String(sent.length);
         listContainer.replaceChildren();
@@ -104,7 +115,14 @@ function bootstrap() {
                 const completeBtn = card.querySelector('[data-action="complete"]');
                 if (acceptBtn) {
                     acceptBtn.addEventListener("click", () => {
-                        updateRequestStatus(req.id, "Accepted", activeUser.name);
+                        const updated = updateRequestStatus(req.id, "Accepted", activeUser.name);
+                        if (updated) {
+                            addUserNotification(updated.requesterId, {
+                                title: "Request Approved!",
+                                message: `${activeUser.name} accepted your request for "${updated.itemTitle}". Ready for pickup: ${updated.pickupTime}.`,
+                                tag: "Claim",
+                            });
+                        }
                         alert(`Request for "${req.itemTitle}" accepted! Item is now Reserved.`);
                         render();
                     });
@@ -112,14 +130,55 @@ function bootstrap() {
                 if (rejectBtn) {
                     rejectBtn.addEventListener("click", () => {
                         if (confirm(`Decline request from ${req.requesterName}?`)) {
-                            updateRequestStatus(req.id, "Rejected", activeUser.name);
+                            const updated = updateRequestStatus(req.id, "Rejected", activeUser.name);
+                            if (updated) {
+                                addUserNotification(updated.requesterId, {
+                                    title: "Request Declined",
+                                    message: `${activeUser.name} declined the request for "${updated.itemTitle}".`,
+                                    tag: "Claim",
+                                });
+                            }
                             render();
                         }
                     });
                 }
                 if (completeBtn) {
                     completeBtn.addEventListener("click", () => {
-                        updateRequestStatus(req.id, "Completed", activeUser.name);
+                        const updated = updateRequestStatus(req.id, "Completed", activeUser.name);
+                        if (updated) {
+                            const now = new Date();
+                            const dateStr = `${now.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}`;
+                            addUserTransaction(updated.requesterId, {
+                                id: `tx_${Date.now()}_req`,
+                                userId: updated.requesterId,
+                                type: "earned",
+                                amount: 15,
+                                title: `Completed transfer: ${updated.itemTitle}`,
+                                category: "Exchange Bonus",
+                                date: dateStr,
+                            });
+                            addUserTransaction(activeUser.id, {
+                                id: `tx_${Date.now()}_don`,
+                                userId: activeUser.id,
+                                type: "earned",
+                                amount: 15,
+                                title: `Completed handoff: ${updated.itemTitle}`,
+                                category: "Exchange Bonus",
+                                date: dateStr,
+                            });
+                            activeUser.coins += 15;
+                            setActiveUser(activeUser);
+                            addUserNotification(updated.requesterId, {
+                                title: "Transfer Completed!",
+                                message: `Exchange for "${updated.itemTitle}" completed. +15 ReUse Coins credited!`,
+                                tag: "Exchange",
+                            });
+                            addUserNotification(activeUser.id, {
+                                title: "Handoff Completed!",
+                                message: `Transfer for "${updated.itemTitle}" marked complete. +15 ReUse Coins bonus credited!`,
+                                tag: "Exchange",
+                            });
+                        }
                         alert(`Great work! Transfer for "${req.itemTitle}" marked Completed. ReUse impact recorded!`);
                         render();
                     });

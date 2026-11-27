@@ -470,10 +470,10 @@ export function createRequest(request: ItemRequest): void {
   });
 }
 
-export function updateRequestStatus(requestId: string, status: RequestStatus, actorName = "Item Donor"): void {
+export function updateRequestStatus(requestId: string, status: RequestStatus, actorName = "Item Donor"): ItemRequest | undefined {
   const requests = getRequests();
   const req = requests.find((r) => r.id === requestId);
-  if (!req) return;
+  if (!req) return undefined;
 
   req.status = status;
   saveRequests(requests);
@@ -492,6 +492,8 @@ export function updateRequestStatus(requestId: string, status: RequestStatus, ac
     action: `Request ${status}`,
     details: `Request for "${req.itemTitle}" marked as ${status}`,
   });
+
+  return req;
 }
 
 // ------------------- REPORTS -------------------
@@ -557,6 +559,23 @@ export function addAuditLog(entry: Omit<AuditLog, "id" | "timestamp">): void {
 // ------------------- USERS -------------------
 export function getUsers(): SystemUser[] {
   return readFromStorage<SystemUser[]>(USERS_KEY, DEFAULT_USERS);
+}
+
+export function addUser(user: SystemUser): void {
+  const users = getUsers();
+  const exists = users.some(
+    (u) => u.id === user.id || u.email.toLowerCase() === user.email.toLowerCase()
+  );
+  if (!exists) {
+    users.push(user);
+    writeToStorage(USERS_KEY, users);
+    addAuditLog({
+      actor: user.name,
+      role: user.role,
+      action: "New User Registered",
+      details: `${user.name} (${user.email}) registered as ${user.role} in ${user.neighborhood}`,
+    });
+  }
 }
 
 export function toggleUserStatus(userId: string, actorName = "Admin", actorId?: string): void {

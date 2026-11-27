@@ -1,4 +1,4 @@
-import { STAT_CARDS, CONTRIBUTORS, CHAIN_STATS, CHAIN_ID, PERIOD_LABEL } from "./data/impactData.js";
+import { STAT_CARDS, getCommunityContributors, CHAIN_STATS, CHAIN_ID, PERIOD_LABEL } from "./data/impactData.js";
 import { createStatCard } from "./components/statCard.js";
 import { createContributorRow } from "./components/contributorList.js";
 import { createQrPattern, renderChainStats } from "./components/chainStats.js";
@@ -11,7 +11,7 @@ function requireElement(id) {
     return el;
 }
 function bootstrap() {
-    syncNavigation();
+    const activeUser = syncNavigation();
     mountLogout();
     const statRow = requireElement("stat-row");
     const list = requireElement("contributor-list");
@@ -19,7 +19,7 @@ function bootstrap() {
     const chainStats = requireElement("chain-stats");
     const periodBadge = document.querySelector(".period-badge");
     statRow.append(...STAT_CARDS.map(createStatCard));
-    list.append(...CONTRIBUTORS.map(createContributorRow));
+    list.append(...getCommunityContributors(activeUser).map(createContributorRow));
     renderChainStats(chainStats, CHAIN_STATS);
     qr.style.backgroundImage = createQrPattern(CHAIN_ID);
     if (periodBadge)

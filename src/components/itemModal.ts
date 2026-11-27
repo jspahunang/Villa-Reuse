@@ -1,6 +1,6 @@
 import type { Item, ItemRequest, ListingReport } from "../types.js";
 import { createRequest, submitReport } from "../data/systemStore.js";
-import { getActiveUser } from "../data/profileData.js";
+import { getActiveUser, addUserNotification } from "../data/profileData.js";
 import { openEditPhotoModal } from "./editPhotoModal.js";
 
 function escapeHtml(value: string): string {
@@ -225,6 +225,21 @@ export function openItemModal(item: Item, onUpdate?: () => void): void {
       };
 
       createRequest(newReq);
+
+      // Notify the item donor
+      addUserNotification(item.donorId, {
+        title: `Incoming ${newReq.type}`,
+        message: `${activeUser.name} submitted a ${newReq.type.toLowerCase()} for "${item.title}". Check your Requests.`,
+        tag: "Requests",
+      });
+
+      // Notify the requester
+      addUserNotification(activeUser.id, {
+        title: `${newReq.type} Sent`,
+        message: `Your ${newReq.type.toLowerCase()} for "${item.title}" was submitted to ${item.donorName}.`,
+        tag: "Claim",
+      });
+
       alert(`Success! Your ${newReq.type.toLowerCase()} has been sent to ${item.donorName}. Track its status in Request Management.`);
       closeModal();
       if (onUpdate) onUpdate();

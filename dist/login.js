@@ -1,4 +1,5 @@
-import { DEMO_USERS, setActiveUser, getActiveUser } from "./data/profileData.js";
+import { DEMO_USERS, setActiveUser, getActiveUser, getRegisteredUsers, } from "./data/profileData.js";
+import { getUsers } from "./data/systemStore.js";
 import { syncNavigation } from "./components/navigation.js";
 const DEMO_PASSWORD = "villa2026";
 const ROLE_HOME = {
@@ -169,6 +170,7 @@ function bootstrap() {
         }
         // Match user by email
         let matchedUser;
+        let expectedPassword = DEMO_PASSWORD;
         // 1. Check in DEMO_USERS
         for (const key of Object.keys(DEMO_USERS)) {
             if (DEMO_USERS[key].email.toLowerCase() === email) {
@@ -176,23 +178,55 @@ function bootstrap() {
                 break;
             }
         }
-        // 2. Check active user or saved user if not in DEMO_USERS
+        // 2. Check registered users registry
+        if (!matchedUser) {
+            const registered = getRegisteredUsers();
+            const rec = registered.find((r) => r.profile.email.toLowerCase() === email);
+            if (rec) {
+                matchedUser = rec.profile;
+                if (rec.password)
+                    expectedPassword = rec.password;
+            }
+        }
+        // 3. Check active user
         if (!matchedUser) {
             const active = getActiveUser();
             if (active.email.toLowerCase() === email) {
                 matchedUser = active;
             }
         }
-        // 3. Fallback for custom registered user matching
+        // 4. Check systemStore users
         if (!matchedUser) {
-            // Check if user entered an email with villa-reuse domain or custom email
-            // Allow signing in if pass is villa2026 or valid string
+            const sysUsers = getUsers();
+            const sysUser = sysUsers.find((u) => u.email.toLowerCase() === email);
+            if (sysUser) {
+                matchedUser = {
+                    id: sysUser.id,
+                    name: sysUser.name,
+                    email: sysUser.email,
+                    initials: sysUser.name
+                        .split(" ")
+                        .map((p) => p[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2),
+                    neighborhood: sysUser.neighborhood,
+                    memberSince: sysUser.joinedYear,
+                    coins: 100,
+                    itemsShared: sysUser.itemsCount,
+                    wasteSavedKg: 0,
+                    role: sysUser.role,
+                    roleScope: "Community member on Villa-Reuse platform.",
+                };
+            }
+        }
+        if (!matchedUser) {
             showAlert("Account not found with this email. Please check your email or select a Demo User below.", true);
             emailInput.focus();
             return;
         }
-        // Validate password: demo password or matching
-        if (pass !== DEMO_PASSWORD) {
+        // Validate password: demo password or user's registered password
+        if (pass !== expectedPassword && pass !== DEMO_PASSWORD) {
             showAlert("That password does not match this account. For demo access, use: villa2026", true);
             passwordInput.focus();
             return;

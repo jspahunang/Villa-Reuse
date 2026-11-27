@@ -2,6 +2,7 @@ import type { ItemStatus } from "../types.js";
 import {
   Profile,
   getActiveUser,
+  setActiveUser,
   toggleUserFavorite,
   getUserTransactions,
   getUserNotifications,
@@ -9,6 +10,8 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
   deleteNotification,
+  addUserTransaction,
+  addUserNotification,
 } from "../data/profileData.js";
 import {
   getItems,
@@ -750,7 +753,14 @@ function attachActivityListeners(
     btn.onclick = () => {
       const reqId = btn.dataset.id;
       if (reqId) {
-        updateRequestStatus(reqId, "Accepted", user.name);
+        const updated = updateRequestStatus(reqId, "Accepted", user.name);
+        if (updated) {
+          addUserNotification(updated.requesterId, {
+            title: "Request Approved!",
+            message: `${user.name} approved your request for "${updated.itemTitle}". Ready for pickup.`,
+            tag: "Claim",
+          });
+        }
         container.innerHTML = buildClaimsHtml(user, "incoming");
         attachActivityListeners("claims", user, onUpdate);
         if (onUpdate) onUpdate();
@@ -763,7 +773,14 @@ function attachActivityListeners(
     btn.onclick = () => {
       const reqId = btn.dataset.id;
       if (reqId) {
-        updateRequestStatus(reqId, "Rejected", user.name);
+        const updated = updateRequestStatus(reqId, "Rejected", user.name);
+        if (updated) {
+          addUserNotification(updated.requesterId, {
+            title: "Request Declined",
+            message: `${user.name} declined the request for "${updated.itemTitle}".`,
+            tag: "Claim",
+          });
+        }
         container.innerHTML = buildClaimsHtml(user, "incoming");
         attachActivityListeners("claims", user, onUpdate);
         if (onUpdate) onUpdate();
@@ -776,7 +793,37 @@ function attachActivityListeners(
     btn.onclick = () => {
       const reqId = btn.dataset.id;
       if (reqId) {
-        updateRequestStatus(reqId, "Completed", user.name);
+        const updated = updateRequestStatus(reqId, "Completed", user.name);
+        if (updated) {
+          const now = new Date();
+          const dateStr = `${now.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}`;
+          addUserTransaction(updated.requesterId, {
+            id: `tx_${Date.now()}_req`,
+            userId: updated.requesterId,
+            type: "earned",
+            amount: 15,
+            title: `Completed transfer: ${updated.itemTitle}`,
+            category: "Exchange Bonus",
+            date: dateStr,
+          });
+          addUserTransaction(user.id, {
+            id: `tx_${Date.now()}_don`,
+            userId: user.id,
+            type: "earned",
+            amount: 15,
+            title: `Completed handoff: ${updated.itemTitle}`,
+            category: "Exchange Bonus",
+            date: dateStr,
+          });
+          user.coins += 15;
+          setActiveUser(user);
+
+          addUserNotification(updated.requesterId, {
+            title: "Transfer Completed!",
+            message: `Exchange for "${updated.itemTitle}" completed. +15 ReUse Coins credited!`,
+            tag: "Exchange",
+          });
+        }
         container.innerHTML = buildClaimsHtml(user, "incoming");
         attachActivityListeners("claims", user, onUpdate);
         if (onUpdate) onUpdate();

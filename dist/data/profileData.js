@@ -314,6 +314,11 @@ export function saveUserTransactions(userId, txs) {
         console.warn("Failed to save transactions", e);
     }
 }
+export function addUserTransaction(userId, tx) {
+    const txs = getUserTransactions(userId);
+    txs.unshift(tx);
+    saveUserTransactions(userId, txs);
+}
 // ----------------- NOTIFICATIONS STORAGE -----------------
 const DEFAULT_NOTIFICATIONS = {
     usr_member: [
@@ -497,6 +502,56 @@ export function deleteNotification(userId, notifId) {
     const notifs = getUserNotifications(userId);
     const updated = notifs.filter((n) => n.id !== notifId);
     saveUserNotifications(userId, updated);
+}
+export function addUserNotification(userId, notif) {
+    const notifs = getUserNotifications(userId);
+    const now = new Date();
+    const dateStr = notif.date ||
+        `${now.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}`;
+    const newNotif = {
+        id: `notif_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        userId,
+        title: notif.title,
+        message: notif.message,
+        date: dateStr,
+        read: notif.read ?? false,
+        tag: notif.tag || "General",
+    };
+    notifs.unshift(newNotif);
+    saveUserNotifications(userId, notifs);
+    return newNotif;
+}
+// ----------------- REGISTERED USERS REGISTRY -----------------
+const REGISTERED_USERS_KEY = "villa_reuse_registered_users";
+export function getRegisteredUsers() {
+    try {
+        const raw = localStorage.getItem(REGISTERED_USERS_KEY);
+        if (raw)
+            return JSON.parse(raw);
+    }
+    catch (e) {
+        console.warn("Failed to read registered users", e);
+    }
+    return [];
+}
+export function saveRegisteredUser(profile, password) {
+    try {
+        const users = getRegisteredUsers();
+        const existingIndex = users.findIndex((u) => u.profile.email.toLowerCase() === profile.email.toLowerCase());
+        if (existingIndex !== -1) {
+            users[existingIndex] = {
+                profile,
+                password: password || users[existingIndex].password,
+            };
+        }
+        else {
+            users.push({ profile, password });
+        }
+        localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(users));
+    }
+    catch (e) {
+        console.warn("Failed to save registered user", e);
+    }
 }
 // ----------------- DYNAMIC ACTIVITY BUILDER -----------------
 export function getUserActivities(user) {

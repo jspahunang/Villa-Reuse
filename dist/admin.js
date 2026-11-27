@@ -29,7 +29,7 @@ function bootstrap() {
             <span>Signed in as: <strong>${escapeHtml(activeUser.name)}</strong> (${escapeHtml(activeUser.role)})</span>
           </div>
           <div class="access-denied-card__actions">
-            <a class="btn btn--solid" href="login-admin.html">Sign In as Administrator</a>
+            <a class="btn btn--solid" href="login.html">Sign In as Administrator</a>
             <a class="btn btn--ghost" href="index.html">Return to Home</a>
           </div>
         </div>
@@ -59,8 +59,11 @@ function bootstrap() {
             statTotalItems.textContent = String(items.filter((i) => !i.hidden).length);
         if (statTotalRequests)
             statTotalRequests.textContent = String(requests.length);
+        // Compute dynamic waste diverted from items + completed requests
+        const activeItems = items.filter((i) => !i.hidden);
+        const estimatedWaste = activeItems.length * 15 + requests.filter((r) => r.status === "Completed").length * 25 + 980;
         if (statTotalWaste)
-            statTotalWaste.textContent = "1,200 kg";
+            statTotalWaste.textContent = `${estimatedWaste.toLocaleString()} kg`;
         // Render Users Table
         if (usersTbody) {
             usersTbody.replaceChildren();
@@ -68,6 +71,9 @@ function bootstrap() {
                 const tr = document.createElement("tr");
                 const isSuspended = u.status === "Suspended";
                 const isSelf = u.id === activeUser.id || u.email.toLowerCase() === activeUser.email.toLowerCase();
+                const userItemCount = items.filter((i) => (i.donorId === u.id || i.donorName.toLowerCase() === u.name.toLowerCase()) &&
+                    !i.hidden).length;
+                const displayItemCount = Math.max(u.itemsCount, userItemCount);
                 tr.innerHTML = `
           <td>
             <strong>${escapeHtml(u.name)}</strong>
@@ -78,7 +84,7 @@ function bootstrap() {
             <span class="card__type-pill" style="background:#eef1ef; font-size:11px;">${escapeHtml(u.role)}</span>
           </td>
           <td>${escapeHtml(u.neighborhood)}</td>
-          <td>${u.itemsCount} items</td>
+          <td>${displayItemCount} items</td>
           <td>
             <span class="card__type-pill ${isSuspended ? "badge--req-rejected" : "badge--req-accepted"}">${escapeHtml(u.status)}</span>
           </td>

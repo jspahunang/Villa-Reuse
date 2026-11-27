@@ -2,10 +2,10 @@ import { mountPhotoUploader } from "./components/photoUploader.js";
 import { mountConditionToggle } from "./components/conditionToggle.js";
 import { estimateCoins } from "./components/coinEstimator.js";
 import { addItem } from "./data/systemStore.js";
-import { setActiveUser } from "./data/profileData.js";
+import { setActiveUser, addUserTransaction, addUserNotification } from "./data/profileData.js";
 import { syncNavigation } from "./components/navigation.js";
 import { mountLogout } from "./components/auth.js";
-import type { Item, Category, ListingType, ItemCondition } from "./types.js";
+import type { Item, Category, ListingType, ItemCondition, CoinTransaction } from "./types.js";
 
 function requireElement<T extends HTMLElement>(id: string): T {
   const el = document.getElementById(id);
@@ -149,6 +149,27 @@ function bootstrap(): void {
     activeUser.coins += earnedCoins;
     activeUser.itemsShared += 1;
     setActiveUser(activeUser);
+
+    // Record coin transaction in ledger
+    const now = new Date();
+    const dateStr = `${now.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}`;
+    const tx: CoinTransaction = {
+      id: `tx_${Date.now()}`,
+      userId: activeUser.id,
+      type: "earned",
+      amount: earnedCoins,
+      title: `Listed "${title}" (${currentType})`,
+      category: "Item Listing",
+      date: dateStr,
+    };
+    addUserTransaction(activeUser.id, tx);
+
+    // Send item published notification
+    addUserNotification(activeUser.id, {
+      title: `Listing published: ${title}`,
+      message: `Your ${currentType.toLowerCase()} is now visible to the community. +${earnedCoins} ReUse Coins credited!`,
+      tag: "Item",
+    });
 
     alert(`Success! "${title}" is now published as a ${currentType}. You earned ${earnedCoins} ReUse Coins!`);
     window.location.href = "index.html";

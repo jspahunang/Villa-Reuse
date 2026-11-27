@@ -67,4 +67,21 @@ export const CHAIN_STATS = [
 ];
 
 export const CHAIN_ID = "7821";
-export const PERIOD_LABEL = "May 2025";
+export const PERIOD_LABEL = "November 2026";
+
+export function getCommunityContributors(activeUser?: { name: string; initials: string; itemsShared: number; wasteSavedKg: number; coins: number }): Contributor[] {
+  const user = activeUser || { name: "Community Member", initials: "CM", itemsShared: 9, wasteSavedKg: 120, coins: 120 };
+  return [
+    { id: 1, name: "Maya K.", initials: "MK", itemsReused: 24, kgSaved: 320, coins: 240 },
+    { id: 2, name: "Omar T.", initials: "OT", itemsReused: 18, kgSaved: 210, coins: 160 },
+    {
+      id: 3,
+      name: `${user.name} (You)`,
+      initials: user.initials,
+      itemsReused: user.itemsShared,
+      kgSaved: user.wasteSavedKg,
+      coins: user.coins,
+      isSelf: true,
+    },
+  ];
+}

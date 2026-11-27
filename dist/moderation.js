@@ -29,7 +29,7 @@ function bootstrap() {
             <span>Signed in as: <strong>${escapeHtml(activeUser.name)}</strong> (${escapeHtml(activeUser.role)})</span>
           </div>
           <div class="access-denied-card__actions">
-            <a class="btn btn--solid" href="login-moderator.html">Sign In as Moderator</a>
+            <a class="btn btn--solid" href="login.html">Sign In as Moderator</a>
             <a class="btn btn--ghost" href="index.html">Return to Home</a>
           </div>
         </div>
